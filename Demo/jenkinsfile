@@ -1,1 +1,29 @@
-Gitfile
+pipeline{
+
+agent any
+
+  stages {
+      stage ('complie code')
+      {
+      steps{
+            echo 'Code has been compiled'
+      }
+      }
+      
+      stage ('Build')
+      {
+      steps{
+            echo 'Code has been Build'
+      }
+      }
+      
+      stage ('Deploy code')
+      {
+      steps{
+            echo 'Code has been Deployed'
+      }
+      }
+  
+  }
+
+}
