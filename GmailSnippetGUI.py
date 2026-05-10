@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from IPython.display import display, clear_output
+from IPython.display import display, clear_output, HTML
 import pandas as pd
 
 # Assuming 'service' object is already authenticated and available from previous cells.
@@ -12,6 +12,12 @@ def get_header_value(headers, name):
     return 'N/A'
 
 # Create widgets
+
+pagination_Header = widgets.HTML(
+    value="<h2 style='text-align: center; color: #1a73e8; font-family: sans-serif;'>📧 Gmail Snippet Fetcher: Your Email Quick View</h2>",
+    placeholder='',
+    description='',
+)
 pagination_select = widgets.Dropdown(
     options=[10, 20, 100],
     value=10,
@@ -56,7 +62,16 @@ def on_fetch_button_clicked(b):
                 })
 
             df_messages_ui = pd.DataFrame(message_data)
-            display(df_messages_ui)
+
+            # Add vertical scroll if more than 20 records
+            if len(df_messages_ui) >= 20:
+                display(HTML(df_messages_ui.to_html().replace('<thead>', '<thead style="text-align: left;">').replace('<th>', '<th style="text-align: left;">') + '<style>table {width: 100%; border-collapse: collapse;}'
+                               'th, td {border: 1px solid #ddd; padding: 8px; text-align: left;}'
+                               'th {background-color: #f2f2f2;}</style>'))
+                display(HTML(f'<div style="max-height: 400px; overflow-y: auto;">{df_messages_ui.to_html(index=False)}</div>'))
+            else:
+                display(df_messages_ui)
+
             print(f"Successfully fetched and displayed {len(df_messages_ui)} messages.")
 
         except Exception as e:
@@ -66,4 +81,4 @@ def on_fetch_button_clicked(b):
 fetch_button.on_click(on_fetch_button_clicked)
 
 # Display the widgets
-display(pagination_select, fetch_button, output_area)
+display(pagination_Header,pagination_select, fetch_button, output_area)
